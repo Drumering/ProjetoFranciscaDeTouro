@@ -20,6 +20,7 @@ public class mainMenu {
 			case 1:
 				System.out.println("Informe os dados do produto a ser CADASTRADO: ");
 				// consultaProduto();
+				
 				// cadastroProduto();
 				break;
 			case 2:
