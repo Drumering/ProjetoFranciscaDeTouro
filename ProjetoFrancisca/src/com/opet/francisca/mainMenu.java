@@ -86,7 +86,8 @@ public class mainMenu {
 	 * @throws SQLException
 	 */
 	public static void cadastrarProduto() {
-
+		System.out.println("Informe os dados para cadastro do NOVO produto: ");
+		
 	}
 
 	public static void consultaProduto() throws ClassNotFoundException, SQLException {
