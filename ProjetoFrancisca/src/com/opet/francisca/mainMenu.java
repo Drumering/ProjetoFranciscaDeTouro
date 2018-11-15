@@ -19,9 +19,7 @@ public class mainMenu {
 			switch (opc) {
 			case 1:
 				System.out.println("Informe os dados do produto a ser CADASTRADO: ");
-				// consultaProduto();
-				
-				// cadastroProduto();
+				cadastrarProduto();
 				break;
 			case 2:
 				System.out.println("");
@@ -30,7 +28,6 @@ public class mainMenu {
 				consultaProduto();
 				break;
 			case 3:
-				System.out.println("Informe o ID do produto que deseja alterar: ");
 				// alterarProduto();
 				break;
 			case 4:
@@ -82,17 +79,122 @@ public class mainMenu {
 	}
 
 	/**
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
+	 * @throws Exception
 	 */
-	public static void cadastrarProduto() {
-		System.out.println("Informe os dados para cadastro do NOVO produto: ");
-		
+	public static void cadastrarProduto() throws Exception {
+
+		System.out.println("");
+		System.out.println("Informe a Categoria do PRODUTO: ");
+		System.out.println("");
+		System.out.println("(1) para CASAL");
+		System.out.println("(2) para SOLTEIRO");
+		System.out.println("(3) para PREMIUM-CASAL");
+		System.out.println("(4) para PREMIUM-SOLTEIRO");
+		System.out.println("(0) para SAIR");
+		int categoria = Reader.readInt();
+
+		if (categoria != 0 && categoria < 5) {
+			System.out.println("");
+			System.out.println("OBS: A UNIDADE DE MEDIDA EM !CENTIMETRO!");
+			System.out.println("");
+
+			System.out.println("Informe o NOME do PRODUTO: ");
+			String nome = Reader.readString();
+			System.out.println("");
+
+			System.out.println("Informe ALTURA: ");
+			double altura = Reader.readDouble();
+			System.out.println("");
+
+			System.out.println("Informe LARGURA: ");
+			double largura = Reader.readDouble();
+			System.out.println("");
+
+			System.out.println("Informe COMPRIMENTO: ");
+			double comprimento = Reader.readDouble();
+			System.out.println("");
+
+			System.out.println("Informe PRECO: ");
+			double preco = Reader.readDouble();
+			System.out.println("");
+
+			System.out.println("Informe QUANTIDADE: ");
+			int quantidade = Reader.readInt();
+			System.out.println("");
+
+			System.out.println("Confirme os Dados Cadastrados: ");
+			switch (categoria) {
+			case 1:
+				System.out.println("Categoria | " + categoria + " | [CASAL]");
+				break;
+			case 2:
+				System.out.println("Categoria | " + categoria + " | [SOLTEIRO]");
+				break;
+			case 3:
+				System.out.println("Categoria | " + categoria + " | [PREMIUM-CASAL]");
+				break;
+			case 4:
+				System.out.println("Categoria | " + categoria + " | [PREMIUM-SOLTEIRO]");
+				break;
+			default:
+				break;
+			}
+			System.out.println("NOME: | " + nome + " |");
+			System.out.println("ALTURA: | " + altura + "cm |");
+			System.out.println("LARGURA: | " + largura + "cm |");
+			System.out.println("COMPRIMENTO: | " + comprimento + "cm |");
+			System.out.println("PRECO: | R$" + preco + " |");
+			System.out.println("QUANTIDADE: | " + quantidade + " un |");
+			System.out.println("");
+
+			System.out.println("Confirma CADASTRO? (1) - SIM (2) - NAO");
+			int confirmacao = Reader.readInt();
+
+			if (confirmacao == 1) {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
+
+				PreparedStatement stmt = conn.prepareStatement(
+						"INSERT INTO produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd) VALUES(proSEQ.nextval,?,?,?,?,?,?,?)");
+
+				stmt.setInt(1, categoria);
+				stmt.setString(2, nome);
+				stmt.setDouble(3, altura);
+				stmt.setDouble(4, largura);
+				stmt.setDouble(5, comprimento);
+				stmt.setDouble(6, preco);
+				stmt.setInt(7, quantidade);
+
+				int rowAffected = stmt.executeUpdate();
+
+				if (rowAffected == 0) {
+					conn.rollback();
+					return;
+				}
+
+				System.out.println("");
+				consultaProduto();
+				System.out.println("");
+
+				conn.commit();
+				stmt.close();
+				conn.close();
+			} else {
+				System.out.println("");
+				System.out.println("Retorne ao Menu Principal");
+				System.out.println("");
+			}
+		} else {
+			System.out.println("");
+			System.out.println("Retorne ao Menu Principal");
+			System.out.println("");
+		}
 	}
 
 	public static void consultaProduto() throws ClassNotFoundException, SQLException {
+
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
 
 		PreparedStatement stmt = conn.prepareStatement(
 				"SELECT proID,proNome,nomeCate FROM produto INNER JOIN categoria ON produto.idCate = categoria.idCate");
@@ -120,9 +222,13 @@ public class mainMenu {
 		stmt.close();
 		conn.close();
 	}
-	
+
+	public static void alterarProduto() throws Exception {
+				
+	}
+
 	public static void consultaCategoria() {
-		
+
 	}
 
 }
