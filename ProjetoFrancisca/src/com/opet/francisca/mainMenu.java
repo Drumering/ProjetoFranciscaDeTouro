@@ -224,7 +224,22 @@ public class mainMenu {
 	}
 
 	public static void alterarProduto() throws Exception {
-				
+		consultaProduto();
+		
+		System.out.println("Insira o ID do PRODUTO que deseja realizar modificacoes: ");
+		int idAlterar = Reader.readInt();
+		
+		System.out.println("Deseja alterar qual registro?: ");
+		System.out.println("");
+		System.out.println("(1) - Categoria");
+		System.out.println("(2) - Nome do PRODUTO");
+		System.out.println("(3) - Altura");
+		System.out.println("(4) - Largura");
+		System.out.println("(5) - Comprimento");
+		System.out.println("(6) - Preco");
+		System.out.println("(7) - Quantidade");
+		System.out.println("");
+		
 	}
 
 	public static void consultaCategoria() {
