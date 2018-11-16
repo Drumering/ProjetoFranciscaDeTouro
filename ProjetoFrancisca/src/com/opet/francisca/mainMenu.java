@@ -40,7 +40,7 @@ public class mainMenu {
 				break;
 			case 6:
 				System.out.println("Consultando Categorias...");
-				// consultaCategoria();
+				consultaCategoria();
 				break;
 			case 7:
 				System.out.println("Informe o ID da Categoria que deseja alterar: ");
@@ -248,6 +248,7 @@ public class mainMenu {
 		while (alterRegistro != 0 && alterRegistro < 8) {
 			switch (alterRegistro) {
 			case 1:
+				consultaCategoria();
 				// alterCategoria
 				break;
 			case 2:
@@ -277,8 +278,30 @@ public class mainMenu {
 
 	}
 
-	public static void consultaCategoria() {
+	public static void consultaCategoria() throws Exception {
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
+		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM categoria");
 
+		conn.setAutoCommit(false);
+
+		ResultSet rs = stmt.executeQuery();
+
+		int idCate;
+		String nomeCate;
+		String slugCate;
+
+		while (rs.next()) {
+			idCate = rs.getInt("idCate");
+			nomeCate = rs.getString("nomeCate");
+			slugCate = rs.getString("slugCate");
+
+			System.out.println("idCategoria: | " + idCate + " | nomeCategoria: |" + nomeCate + " | slugCategoria: | "
+					+ slugCate + " |");
+		}
+		System.out.println("");
+		System.out.println("Fim da Consulta");
+		System.out.println("");
 	}
 
 }
