@@ -225,10 +225,10 @@ public class mainMenu {
 
 	public static void alterarProduto() throws Exception {
 		consultaProduto();
-		
+
 		System.out.println("Insira o ID do PRODUTO que deseja realizar modificacoes: ");
 		int idAlterar = Reader.readInt();
-		
+
 		System.out.println("Deseja alterar qual registro?: ");
 		System.out.println("");
 		System.out.println("(1) - Categoria");
@@ -238,8 +238,43 @@ public class mainMenu {
 		System.out.println("(5) - Comprimento");
 		System.out.println("(6) - Preco");
 		System.out.println("(7) - Quantidade");
+		System.out.println("(0) - Cancelar alteracao");
 		System.out.println("");
-		
+		int alterRegistro = Reader.readInt();
+
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
+
+		while (alterRegistro != 0 && alterRegistro < 8) {
+			switch (alterRegistro) {
+			case 1:
+				// alterCategoria
+				break;
+			case 2:
+				// alterNome
+				break;
+			case 3:
+				// alterAltura
+				break;
+			case 4:
+				// alterLargura
+				break;
+			case 5:
+				// alterComprimento
+				break;
+			case 6:
+				// alterPreco
+				break;
+			case 7:
+				// alterQuantidade
+				break;
+			case 0:
+				break;
+			default:
+				break;
+			}
+		}
+
 	}
 
 	public static void consultaCategoria() {
