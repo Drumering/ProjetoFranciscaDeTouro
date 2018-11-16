@@ -28,7 +28,10 @@ public class mainMenu {
 				consultaProduto();
 				break;
 			case 3:
-				// alterarProduto();
+				System.out.println("");
+				System.out.println("Alterando Produtos...");
+				System.out.println("");
+				alterarProduto();
 				break;
 			case 4:
 				System.out.println("Informe o ID do produto que deseja excluir: ");
@@ -245,11 +248,40 @@ public class mainMenu {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
 
-		while (alterRegistro != 0 && alterRegistro < 8) {
+		if (alterRegistro != 0 && alterRegistro < 8) {
 			switch (alterRegistro) {
 			case 1:
 				consultaCategoria();
-				// alterCategoria
+				PreparedStatement stmt = conn.prepareStatement("SELECT proNome FROM produto WHERE proID =?");
+				stmt.setInt(1, idAlterar);
+				ResultSet rs = stmt.executeQuery();
+				String proNome = null;
+				while (rs.next()) {
+					proNome = rs.getString("proNome");
+				}
+				System.out.println("Informe o ID da nova CATEGORIA do PRODUTO:  " + proNome);
+				int novaCategoria = Reader.readInt();
+				PreparedStatement stmtCate = conn.prepareStatement("SELECT nomeCate FROM categoria WHERE idCate = ?");
+				stmtCate.setInt(1, novaCategoria);
+				ResultSet rsCate = stmtCate.executeQuery();
+				String nomeNovaCategoria = null;
+				while (rsCate.next()) {
+					nomeNovaCategoria = rsCate.getString("nomeCate");
+					System.out.println(
+							"Confirma alteracao da CATEGORIA do PRODUTO " + proNome + " para: " + nomeNovaCategoria);
+				}
+				System.out.println("");
+				System.out.println("(1) Sim - (2) Cancelar");
+				System.out.println("");
+				int confirmacao = Reader.readInt();
+				if (confirmacao == 1) {
+					PreparedStatement stmtUpdate = conn
+							.prepareStatement("UPDATE produto SET idCate = ? WHERE proID = ?");
+					stmtUpdate.setInt(1, novaCategoria);
+					stmtUpdate.setInt(2, idAlterar);
+				} else {
+					System.out.println("Operacao Cancelada");
+				}
 				break;
 			case 2:
 				// alterNome
@@ -274,6 +306,12 @@ public class mainMenu {
 			default:
 				break;
 			}
+		} else if (alterRegistro >= 8) {
+			System.out.println("Opcao Invalida, cancelando Operacao");
+			System.out.println("");
+		} else {
+			System.out.println("Cancelando Operacao");
+			System.out.println("");
 		}
 
 	}
