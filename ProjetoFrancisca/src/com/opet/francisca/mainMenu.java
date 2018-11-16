@@ -251,6 +251,7 @@ public class mainMenu {
 		if (alterRegistro != 0 && alterRegistro < 8) {
 			switch (alterRegistro) {
 			case 1:
+				// alterCategoria
 				consultaCategoria();
 				PreparedStatement stmt = conn.prepareStatement("SELECT proNome FROM produto WHERE proID =?");
 				stmt.setInt(1, idAlterar);
@@ -279,6 +280,14 @@ public class mainMenu {
 							.prepareStatement("UPDATE produto SET idCate = ? WHERE proID = ?");
 					stmtUpdate.setInt(1, novaCategoria);
 					stmtUpdate.setInt(2, idAlterar);
+
+					conn.commit();
+					rs.close();
+					rsCate.close();
+					stmt.close();
+					stmtCate.close();
+					stmtUpdate.close();
+					conn.close();
 				} else {
 					System.out.println("Operacao Cancelada");
 				}
@@ -313,7 +322,6 @@ public class mainMenu {
 			System.out.println("Cancelando Operacao");
 			System.out.println("");
 		}
-
 	}
 
 	public static void consultaCategoria() throws Exception {
@@ -340,6 +348,10 @@ public class mainMenu {
 		System.out.println("");
 		System.out.println("Fim da Consulta");
 		System.out.println("");
+
+		rs.close();
+		stmt.close();
+		conn.close();
 	}
 
 }
