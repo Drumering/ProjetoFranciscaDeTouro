@@ -39,7 +39,7 @@ public class mainMenu {
 				break;
 			case 5:
 				System.out.println("Informe os dados da categoria a ser CADASTRADA: ");
-				// cadastroCategoria();
+				cadastrarCategoria();
 				break;
 			case 6:
 				System.out.println("Consultando Categorias...");
@@ -155,7 +155,8 @@ public class mainMenu {
 
 			if (confirmacao == 1) {
 				Class.forName("oracle.jdbc.driver.OracleDriver");
-				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
+				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system",
+						"system");
 
 				PreparedStatement stmt = conn.prepareStatement(
 						"INSERT INTO produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd) VALUES(proSEQ.nextval,?,?,?,?,?,?,?)");
@@ -197,7 +198,7 @@ public class mainMenu {
 	public static void consultaProduto() throws ClassNotFoundException, SQLException {
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
 
 		PreparedStatement stmt = conn.prepareStatement(
 				"SELECT proID,proNome,nomeCate FROM produto INNER JOIN categoria ON produto.idCate = categoria.idCate");
@@ -246,7 +247,7 @@ public class mainMenu {
 		int alterRegistro = Reader.readInt();
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
 		// alterCategoria
 		// Execucao de Consulta para busca do nome do ID informado pelo USUARIO
 		consultaCategoria();
@@ -367,9 +368,71 @@ public class mainMenu {
 		}
 	}
 
+	public static void cadastrarCategoria() throws Exception {
+		consultaCategoria();
+
+		System.out.println("Informe o nome da NOVA CATEGORIA: ");
+		String nomeCate = Reader.readString();
+		System.out.println("");
+
+		System.out.println("Informe o SLUG da nova CATEGORIA: ");
+		String slugCate = Reader.readString();
+		System.out.println("");
+
+		System.out.println("Informe se item possui PILLOW: (1) SIM - (2) NAO ");
+		int pillow = Reader.readInt();
+		while (pillow == 0 || pillow > 2) {
+			System.out.println("Opcao Invalida");
+			System.out.println("Informe se item possui PILLOW: (1) SIM - (2) NAO ");
+		}
+		System.out.println("");
+		String _pillow;
+		if (pillow == 1) {
+			_pillow = "SIM";
+			pillow = 1;
+		} else {
+			_pillow = "NAO";
+			pillow = 0;
+		}
+
+		System.out.println("Confirma cadastro da NOVA CATEGORIA: NOME: |" + nomeCate + "| SLUG: |" + slugCate
+				+ "| PILLOW: | " + _pillow + " |");
+		System.out.println("(1) SIM - (2) NAO");
+		int confirmaCate = Reader.readInt();
+
+		if (confirmaCate == 1) {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+
+			PreparedStatement stmtCate = conn.prepareStatement(
+					"INSERT INTO categoria (idCate,nomeCate,slugCate,pillow) VALUES (CateSEQ.nextval,?,?,?)");
+
+			stmtCate.setString(1, nomeCate);
+			stmtCate.setString(2, slugCate);
+			stmtCate.setInt(3, pillow);
+
+			int rowAffected = stmtCate.executeUpdate();
+
+			if (rowAffected == 0) {
+				conn.rollback();
+				return;
+			}
+
+			System.out.println("");
+			consultaProduto();
+			System.out.println("");
+
+			conn.commit();
+			conn.close();
+			stmtCate.close();
+		} else {
+			System.out.println("Operacao Cancelada");
+		}
+	}
+
 	public static void consultaCategoria() throws Exception {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
 		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM categoria");
 
 		conn.setAutoCommit(false);
@@ -379,14 +442,23 @@ public class mainMenu {
 		int idCate;
 		String nomeCate;
 		String slugCate;
+		int pillow;
+		String _pillow;
 
 		while (rs.next()) {
 			idCate = rs.getInt("idCate");
 			nomeCate = rs.getString("nomeCate");
 			slugCate = rs.getString("slugCate");
+			pillow = rs.getInt("pillow");
+
+			if (pillow == 1) {
+				_pillow = "SIM";
+			} else {
+				_pillow = "NAO";
+			}
 
 			System.out.println("idCategoria: | " + idCate + " | nomeCategoria: |" + nomeCate + " | slugCategoria: | "
-					+ slugCate + " |");
+					+ slugCate + " | PILLOW: | " + _pillow + " |");
 		}
 		System.out.println("");
 		System.out.println("Fim da Consulta");
