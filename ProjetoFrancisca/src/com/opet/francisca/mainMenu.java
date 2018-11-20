@@ -247,30 +247,30 @@ public class mainMenu {
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
+		// alterCategoria
+		// Execucao de Consulta para busca do nome do ID informado pelo USUARIO
+		consultaCategoria();
+		// Preparacao da Query SQL
+		PreparedStatement stmt = conn.prepareStatement("SELECT proNome FROM produto WHERE proID =?");
+		// Insere Variavel ID na primeira Posicao para Busca em WHERE
+		stmt.setInt(1, idAlterar);
+
+		// Executa query
+		ResultSet rs = stmt.executeQuery();
+		// Variavel para Armazenamento da busca
+		String proNome = null;
+		// Lopp para captura da consulta e armazenamento em variavel
+		while (rs.next()) {
+			proNome = rs.getString("proNome");
+		}
 
 		if (alterRegistro != 0 && alterRegistro < 8) {
 			switch (alterRegistro) {
 			case 1:
-				// alterCategoria
-				// Execucao de Consulta para busca do nome do ID informado pelo USUARIO
-				consultaCategoria();
-				// Preparacao da Query SQL
-				PreparedStatement stmt = conn.prepareStatement("SELECT proNome FROM produto WHERE proID =?");
-				// Insere Variavel ID na primeira Posicao para Busca em WHERE
-				stmt.setInt(1, idAlterar);
-
-				// Executa query
-				ResultSet rs = stmt.executeQuery();
-				// Variavel para Armazenamento da busca
-				String proNome = null;
-				// Lopp para captura da consulta e armazenamento em variavel
-				while (rs.next()) {
-					proNome = rs.getString("proNome");
-				}
 				// Impressao do Resultado e Solicitacao para Leitura de Nova Categoria para
 				// produto pesquisado anteriormente
 				System.out.println("Informe o ID da nova CATEGORIA do PRODUTO:  " + proNome);
-				// Leitura da ID da NOVA Categoria do Produtos
+				// Leitura da ID da NOVA Categoria do Produto
 				int novaCategoria = Reader.readInt();
 				// Preparacao da Query SQL
 				PreparedStatement stmtCate = conn.prepareStatement("SELECT nomeCate FROM categoria WHERE idCate = ?");
@@ -291,26 +291,52 @@ public class mainMenu {
 				System.out.println("");
 				System.out.println("(1) Sim - (2) Cancelar");
 				System.out.println("");
-				int confirmacao = Reader.readInt();
-				if (confirmacao == 1) {
-					PreparedStatement stmtUpdate = conn
+				int confirmacaoCate = Reader.readInt();
+				if (confirmacaoCate == 1) {
+					PreparedStatement stmtUpdateCate = conn
 							.prepareStatement("UPDATE produto SET idCate = ? WHERE proID = ?");
-					stmtUpdate.setInt(1, novaCategoria);
-					stmtUpdate.setInt(2, idAlterar);
+					stmtUpdateCate.setInt(1, novaCategoria);
+					stmtUpdateCate.setInt(2, idAlterar);
+
+					stmtUpdateCate.executeUpdate();
 
 					conn.commit();
-					rs.close();
 					rsCate.close();
-					stmt.close();
 					stmtCate.close();
-					stmtUpdate.close();
-					conn.close();
+					stmtUpdateCate.close();
+					// stmt.close();
+					// rs.close();
+					// conn.close();
 				} else {
 					System.out.println("Operacao Cancelada");
 				}
 				break;
 			case 2:
 				// alterNome
+				// Impressao do Resultado e Solicitacao para Leitura de Nova Categoria para
+				// produto pesquisado anteriormente
+				System.out.println("Informe o novo NOME do PRODUTO:  " + proNome);
+				// Leitura da ID da NOVO NOME do Produto
+				String novoNome = Reader.readString();
+				System.out.println("Confirma a alteracao do PROTUDO: " + proNome + " para " + novoNome + "?");
+				// Solicitacao das Confirmacoes de Acoes
+				System.out.println("");
+				System.out.println("(1) Sim - (2) Cancelar");
+				System.out.println("");
+				int confirmacaoNome = Reader.readInt();
+				if (confirmacaoNome == 1) {
+					PreparedStatement stmtUpdateNome = conn
+							.prepareStatement("UPDATE produto SET proNome = ? WHERE proID = ?");
+					stmtUpdateNome.setString(1, novoNome);
+					stmtUpdateNome.setInt(2, idAlterar);
+
+					stmtUpdateNome.executeUpdate();
+
+					conn.commit();
+					stmtUpdateNome.close();
+				} else {
+					System.out.println("Cancelando Operacao");
+				}
 				break;
 			case 3:
 				// alterAltura
