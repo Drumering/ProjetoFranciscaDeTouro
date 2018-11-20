@@ -152,6 +152,7 @@ public class mainMenu {
 
 			System.out.println("Confirma CADASTRO? (1) - SIM (2) - NAO");
 			int confirmacao = Reader.readInt();
+			
 
 			if (confirmacao == 1) {
 				Class.forName("oracle.jdbc.driver.OracleDriver");
