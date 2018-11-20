@@ -252,25 +252,42 @@ public class mainMenu {
 			switch (alterRegistro) {
 			case 1:
 				// alterCategoria
+				// Execucao de Consulta para busca do nome do ID informado pelo USUARIO
 				consultaCategoria();
+				// Preparacao da Query SQL
 				PreparedStatement stmt = conn.prepareStatement("SELECT proNome FROM produto WHERE proID =?");
+				// Insere Variavel ID na primeira Posicao para Busca em WHERE
 				stmt.setInt(1, idAlterar);
+
+				// Executa query
 				ResultSet rs = stmt.executeQuery();
+				// Variavel para Armazenamento da busca
 				String proNome = null;
+				// Lopp para captura da consulta e armazenamento em variavel
 				while (rs.next()) {
 					proNome = rs.getString("proNome");
 				}
+				// Impressao do Resultado e Solicitacao para Leitura de Nova Categoria para
+				// produto pesquisado anteriormente
 				System.out.println("Informe o ID da nova CATEGORIA do PRODUTO:  " + proNome);
+				// Leitura da ID da NOVA Categoria do Produtos
 				int novaCategoria = Reader.readInt();
+				// Preparacao da Query SQL
 				PreparedStatement stmtCate = conn.prepareStatement("SELECT nomeCate FROM categoria WHERE idCate = ?");
+				// Insere variavel na primeira posicao para WHERE
 				stmtCate.setInt(1, novaCategoria);
+				// Executa a query
 				ResultSet rsCate = stmtCate.executeQuery();
+				// Variavel para armazenamento do resultado da QUERY
 				String nomeNovaCategoria = null;
+				// Loop para captura da consulta e armazenamento em variável e impressao de
+				// resultado
 				while (rsCate.next()) {
 					nomeNovaCategoria = rsCate.getString("nomeCate");
 					System.out.println(
 							"Confirma alteracao da CATEGORIA do PRODUTO " + proNome + " para: " + nomeNovaCategoria);
 				}
+				// Solicitacao de confirmacao de acoes
 				System.out.println("");
 				System.out.println("(1) Sim - (2) Cancelar");
 				System.out.println("");
