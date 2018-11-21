@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="ProjetoFrancisca/src"/>
+	<classpathentry kind="lib" path="ProjetoFrancisca/packages/ojdbc6.jar"/>
+	<classpathentry kind="lib" path="ProjetoFrancisca/packages/reader.jar"/>
+	<classpathentry kind="output" path="ProjetoFrancisca/bin"/>
+</classpath>
