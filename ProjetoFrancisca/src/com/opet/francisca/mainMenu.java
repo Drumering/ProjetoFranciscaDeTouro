@@ -152,12 +152,10 @@ public class mainMenu {
 
 			System.out.println("Confirma CADASTRO? (1) - SIM (2) - NAO");
 			int confirmacao = Reader.readInt();
-			
 
 			if (confirmacao == 1) {
 				Class.forName("oracle.jdbc.driver.OracleDriver");
-				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system",
-						"system");
+				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "1234", "system");
 
 				PreparedStatement stmt = conn.prepareStatement(
 						"INSERT INTO produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd) VALUES(proSEQ.nextval,?,?,?,?,?,?,?)");
@@ -199,7 +197,7 @@ public class mainMenu {
 	public static void consultaProduto() throws ClassNotFoundException, SQLException {
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
 
 		PreparedStatement stmt = conn.prepareStatement(
 				"SELECT proID,proNome,nomeCate FROM produto INNER JOIN categoria ON produto.idCate = categoria.idCate");
@@ -248,7 +246,7 @@ public class mainMenu {
 		int alterRegistro = Reader.readInt();
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
 		// alterCategoria
 		// Execucao de Consulta para busca do nome do ID informado pelo USUARIO
 		consultaCategoria();
@@ -294,13 +292,22 @@ public class mainMenu {
 				System.out.println("(1) Sim - (2) Cancelar");
 				System.out.println("");
 				int confirmacaoCate = Reader.readInt();
-				if (confirmacaoCate == 1) {
+				if (confirmacaoCate == 1 && confirmacaoCate < 3) {
 					PreparedStatement stmtUpdateCate = conn
 							.prepareStatement("UPDATE produto SET idCate = ? WHERE proID = ?");
 					stmtUpdateCate.setInt(1, novaCategoria);
 					stmtUpdateCate.setInt(2, idAlterar);
 
-					stmtUpdateCate.executeUpdate();
+					conn.setAutoCommit(false);
+
+					int rowAffected = stmtUpdateCate.executeUpdate();
+
+					if (rowAffected == 0) {
+						conn.rollback();
+						return;
+					} else {
+						System.out.println("Alteracao Realizada com Sucesso!");
+					}
 
 					conn.commit();
 					rsCate.close();
@@ -326,13 +333,22 @@ public class mainMenu {
 				System.out.println("(1) Sim - (2) Cancelar");
 				System.out.println("");
 				int confirmacaoNome = Reader.readInt();
-				if (confirmacaoNome == 1) {
+				if (confirmacaoNome == 1 && confirmacaoNome < 3) {
 					PreparedStatement stmtUpdateNome = conn
 							.prepareStatement("UPDATE produto SET proNome = ? WHERE proID = ?");
 					stmtUpdateNome.setString(1, novoNome);
 					stmtUpdateNome.setInt(2, idAlterar);
 
-					stmtUpdateNome.executeUpdate();
+					conn.setAutoCommit(false);
+
+					int rowAffected = stmtUpdateNome.executeUpdate();
+
+					if (rowAffected == 0) {
+						conn.rollback();
+						return;
+					} else {
+						System.out.println("Alteracao Realizada com Sucesso!");
+					}
 
 					conn.commit();
 					stmtUpdateNome.close();
@@ -342,18 +358,174 @@ public class mainMenu {
 				break;
 			case 3:
 				// alterAltura
+				System.out.println("Lembre-se. Unidade de Medida em !cm!");
+				System.out.println("Informe a nova ALTURA do PRODUTO: " + proNome);
+				System.out.println("");
+				int novaAltura = Reader.readInt();
+				System.out.println(
+						"Confirma a alteracao da ALTURA do PRODUTO: " + proNome + " para " + novaAltura + "cm?");
+				System.out.println("");
+				System.out.println("(1) Sim - (2) Cancelar");
+				int confirmacaoAltura = Reader.readInt();
+				if (confirmacaoAltura == 1 && confirmacaoAltura < 3) {
+					PreparedStatement stmtUpdateAltura = conn
+							.prepareStatement("UPDATE produto SET proAltura = ? WHERE proID = ?");
+					stmtUpdateAltura.setInt(1, novaAltura);
+					stmtUpdateAltura.setInt(2, idAlterar);
+
+					conn.setAutoCommit(false);
+
+					int rowAffected = stmtUpdateAltura.executeUpdate();
+
+					if (rowAffected == 0) {
+						conn.rollback();
+						return;
+					} else {
+						System.out.println("Alteracao Realizada com Sucesso!");
+					}
+
+					conn.commit();
+					stmtUpdateAltura.close();
+				} else {
+					System.out.println("Cancelando Operacao");
+				}
 				break;
 			case 4:
 				// alterLargura
+				System.out.println("Lembre-se. Unidade de Medida em !cm!");
+				System.out.println("Informe a nova LARGURA do PRODUTO: " + proNome);
+				System.out.println("");
+				int novaLargura = Reader.readInt();
+				System.out.println(
+						"Confirma alteacao da LARGURA do PRODUTO: " + proNome + " para " + novaLargura + "cm?");
+				System.out.println("");
+				System.out.println("(1) Sim - (2) Cancelar");
+				int confirmacaoLargura = Reader.readInt();
+				if (confirmacaoLargura == 1 && confirmacaoLargura < 3) {
+					PreparedStatement stmtUpdateLargura = conn
+							.prepareStatement("UPDATE produto SET proLargura = ? WHERE proID = ?");
+					stmtUpdateLargura.setInt(1, novaLargura);
+					stmtUpdateLargura.setInt(2, idAlterar);
+
+					conn.setAutoCommit(false);
+
+					int rowAffected = stmtUpdateLargura.executeUpdate();
+
+					if (rowAffected == 0) {
+						conn.rollback();
+						return;
+					} else {
+						System.out.println("Alteracao Realizada com Sucesso!");
+					}
+
+					conn.commit();
+					stmtUpdateLargura.close();
+				} else {
+					System.out.println("Cancelando Operacao");
+				}
+
 				break;
 			case 5:
 				// alterComprimento
+				System.out.println("Lembre-se. Unidade de Medida em !cm!");
+				System.out.println("Informe o novo COMPRIMENTO do PRODUTO: " + proNome);
+				System.out.println("");
+				int novoComprimento = Reader.readInt();
+				System.out.println("Confirma alteracao do COMPRIMENTO do PRODUTO: " + proNome + " para "
+						+ novoComprimento + "cm?");
+				System.out.println("");
+				System.out.println("(1) Sim - (2) Cancelar");
+				int confirmacaoComprimento = Reader.readInt();
+				if (confirmacaoComprimento == 1) {
+					PreparedStatement stmtUpdateComprimento = conn
+							.prepareStatement("UPDATE produto SET proCompr = ? WHERE proID = ?");
+					stmtUpdateComprimento.setInt(1, novoComprimento);
+					stmtUpdateComprimento.setInt(2, idAlterar);
+
+					conn.setAutoCommit(false);
+
+					int rowAffected = stmtUpdateComprimento.executeUpdate();
+
+					if (rowAffected == 0) {
+						conn.rollback();
+						return;
+					} else {
+						System.out.println("Alteracao Realizada com Sucesso!");
+					}
+
+					conn.commit();
+					stmtUpdateComprimento.close();
+				} else {
+					System.out.println("Cancelando Operacao");
+				}
 				break;
 			case 6:
 				// alterPreco
+				System.out.println("Informe o novo PRECO do PRODUTO: " + proNome);
+				System.out.println("");
+				double novoPreco = Reader.readDouble();
+				System.out.println("Confirma alteracao do PRECO do PRODUTO: " + proNome + " para R$" + novoPreco + "?");
+				System.out.println("");
+				System.out.println("(1) Sim - (2) Cancelar");
+				int confirmacaoPreco = Reader.readInt();
+				if (confirmacaoPreco == 1) {
+					PreparedStatement stmtUpdatePreco = conn
+							.prepareStatement("UPDATE produto SET proPreco = ? WHERE proID = ?");
+					stmtUpdatePreco.setDouble(1, novoPreco);
+					stmtUpdatePreco.setInt(2, idAlterar);
+
+					conn.setAutoCommit(false);
+
+					int rowAffected = stmtUpdatePreco.executeUpdate();
+
+					if (rowAffected == 0) {
+						conn.rollback();
+						return;
+					} else {
+						System.out.println("Alteracao Realizada com Sucesso!");
+					}
+
+					conn.commit();
+					stmtUpdatePreco.close();
+				} else {
+					System.out.println("Cancelando Operacao");
+				}
 				break;
 			case 7:
 				// alterQuantidade
+				System.out.println("Informe a nova QUANTIDADE do PRODUTO: " + proNome);
+				System.out.println("");
+				int novaQnt = Reader.readInt();
+				System.out
+						.println("Confirma alteracao da QUANTIDADE do PRODUTO: " + proNome + " para " + novaQnt + "?");
+				System.out.println("(1) Sim - (2) Cancelar");
+				int confirmacaoQnt = Reader.readInt();
+				if (confirmacaoQnt == 1) {
+					PreparedStatement stmtUpdateQnt = conn
+							.prepareStatement("UPDATE produto SET proQntd = ? WHERE proID = ?");
+					stmtUpdateQnt.setInt(1, novaQnt);
+					stmtUpdateQnt.setInt(2, idAlterar);
+
+					conn.setAutoCommit(false);
+
+					int rowAffected = stmtUpdateQnt.executeUpdate();
+
+					if (rowAffected == 0) {
+						conn.rollback();
+						return;
+					} else {
+						System.out.println("Alteracao Realizada com Sucesso!");
+					}
+
+					conn.commit();
+					stmtUpdateQnt.close();
+					stmt.close();
+					rs.close();
+					conn.close();
+
+				} else {
+					System.out.println("Cancelando Operacao");
+				}
 				break;
 			case 0:
 				break;
@@ -403,7 +575,7 @@ public class mainMenu {
 
 		if (confirmaCate == 1) {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
-			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
 
 			PreparedStatement stmtCate = conn.prepareStatement(
 					"INSERT INTO categoria (idCate,nomeCate,slugCate,pillow) VALUES (CateSEQ.nextval,?,?,?)");
@@ -433,7 +605,7 @@ public class mainMenu {
 
 	public static void consultaCategoria() throws Exception {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "1234");
 		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM categoria");
 
 		conn.setAutoCommit(false);
