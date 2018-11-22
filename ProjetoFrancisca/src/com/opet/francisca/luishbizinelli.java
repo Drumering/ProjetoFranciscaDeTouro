@@ -49,7 +49,7 @@ public class luishbizinelli {
 					break;
 				case 8:
 					System.out.println("Informe o ID da Categoria que deseja excluir: ");
-					// excluirCategoria();
+					excluircategoria();
 					break;
 				case 0:
 					System.out.println("Saindo...");
@@ -199,8 +199,9 @@ public class luishbizinelli {
 		public static void excluirproduto () throws Exception {
 			
 			System.out.println("digite o ID produto gostaria de excluir:");
-			
-			//consulta produto 
+			System.out.println("");
+			consultaProduto();
+			System.out.println("");
 			int ID = Reader.readInt(); // inteiro id excluir 
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system",
@@ -491,21 +492,21 @@ public class luishbizinelli {
 		}
 
 
-public static void excluircategoria() throws Exception {
-	
-	System.out.println("digite a categoria gostaria de excluir:");
-	String nomeCate = Reader.readString();
-	Class.forName("oracle.jdbc.driver.OracleDriver");
-	Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system",
-			"Rrempp666.");
+public static void excluircategoria () throws Exception {
+			
+			System.out.println("digite o ID da categoria que gostaria de excluir:");
+			System.out.println("");
+			consultaCategoria();
+			System.out.println("");
+			int ID = Reader.readInt(); // inteiro id excluir 
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system",
+					"Rrempp666.");
 
-	PreparedStatement stmt = conn.prepareStatement(
-			"INSERT INTO produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd) VALUES(proSEQ.nextval,?)");
+			PreparedStatement stmt = conn.prepareStatement(
+					"DELETE FROM categoria WHERE idCate = ?");
 
-	stmt.setString(2, nomeCate);
-
-	int rowAffected = stmt.executeUpdate();
-
+			stmt.setInt(1, ID);
 }
 
 }
