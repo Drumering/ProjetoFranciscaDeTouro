@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="ProjetoFrancisca/src"/>
+	<classpathentry kind="src" path="com.opet.sql"/>
 	<classpathentry kind="lib" path="ProjetoFrancisca/packages/ojdbc6.jar"/>
 	<classpathentry kind="lib" path="ProjetoFrancisca/packages/reader.jar"/>
 	<classpathentry kind="output" path="ProjetoFrancisca/bin"/>
