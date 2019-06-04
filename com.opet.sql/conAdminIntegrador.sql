@@ -9,9 +9,9 @@ create table produto(
     proID number(5) not null,
     idCate number(5) not null,
     proNome varchar2(50) not null,
-    proAltura varchar2(10),
-    proLargura varchar2(10),
-    proCompr varchar2(10),
+    proAltura number(6,2),
+    proLargura number(6,2),
+    proCompr number(6,2),
     proPreco number(15,2),
     proQntd number(10),
     constraint pro_pk primary key(proID),
@@ -93,16 +93,16 @@ insert into categoria(idCate,nomeCate,slugCate)
 values (CateSEQ.nextval,'premium-solteiro','colchao-premium-solteiro');
 
 insert into produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd)
-values (proSEQ.nextval,1,'Cholchao Dona Joana','1','2','3',1250.99,150);
+values (proSEQ.nextval,1,'Cholchao Dona Joana',1.1,2.2,3.3,1250.99,150);
 
 insert into produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd)
-values (proSEQ.nextval,2,'Cholchao Juninho','1','2','3',700.98,10);
+values (proSEQ.nextval,2,'Cholchao Juninho',1111.11,22.2,33.3,700.98,10);
 
 insert into produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd)
-values (proSEQ.nextval,1,'Cholchao KingFuckingSize','1','3','4',5488.99,300);
+values (proSEQ.nextval,1,'Cholchao KingFuckingSize',1.1,3.3,4.4,5488.99,300);
 
 insert into produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd)
-values (proSEQ.nextval,1,'Cholchao LordFuckingSize','1','2','3',3498.55,400);
+values (proSEQ.nextval,1,'Cholchao LordFuckingSize',1.2,2.2,3.3,3498.55,400);
 
 insert into carrinho(idCarrinho,proID)
 values(carrinhoSEQ.nextval,1);
