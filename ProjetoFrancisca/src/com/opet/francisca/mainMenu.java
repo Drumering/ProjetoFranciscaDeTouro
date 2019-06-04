@@ -153,7 +153,7 @@ public class mainMenu {
 
 			if (confirmacao == 1) {
 				Class.forName("oracle.jdbc.driver.OracleDriver");
-				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "admin", "admin");
 
 				PreparedStatement stmt = conn.prepareStatement(
 						"INSERT INTO produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd) VALUES(proSEQ.nextval,?,?,?,?,?,?,?)");
@@ -195,7 +195,7 @@ public class mainMenu {
 	public static void consultaProduto() throws ClassNotFoundException, SQLException {
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "admin", "admin");
 
 		PreparedStatement stmt = conn.prepareStatement(
 				"SELECT proID,proNome,nomeCate FROM produto INNER JOIN categoria ON produto.idCate = categoria.idCate");
@@ -244,7 +244,7 @@ public class mainMenu {
 		int alterRegistro = Reader.readInt();
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "admin", "admin");
 		// alterCategoria
 		// Execucao de Consulta para busca do nome do ID informado pelo USUARIO
 		consultaCategoria();
@@ -573,7 +573,7 @@ public class mainMenu {
 
 		if (confirmaCate == 1) {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
-			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "admin", "admin");
 
 			PreparedStatement stmtCate = conn.prepareStatement(
 					"INSERT INTO categoria (idCate,nomeCate,slugCate,pillow) VALUES (CateSEQ.nextval,?,?,?)");
@@ -603,7 +603,7 @@ public class mainMenu {
 
 	public static void consultaCategoria() throws Exception {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "admin", "admin");
 		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM categoria");
 
 		conn.setAutoCommit(false);
@@ -613,23 +613,14 @@ public class mainMenu {
 		int idCate;
 		String nomeCate;
 		String slugCate;
-		int pillow;
-		String _pillow;
 
 		while (rs.next()) {
 			idCate = rs.getInt("idCate");
 			nomeCate = rs.getString("nomeCate");
 			slugCate = rs.getString("slugCate");
-			pillow = rs.getInt("pillow");
-
-			if (pillow == 1) {
-				_pillow = "SIM";
-			} else {
-				_pillow = "NAO";
-			}
 
 			System.out.println("idCategoria: | " + idCate + " | nomeCategoria: |" + nomeCate + " | slugCategoria: | "
-					+ slugCate + " | PILLOW: | " + _pillow + " |");
+					+ slugCate + " | PILLOW: | ");
 		}
 		System.out.println("");
 		System.out.println("Fim da Consulta");
@@ -648,7 +639,7 @@ public class mainMenu {
 		System.out.println("");
 		int ID = Reader.readInt(); // inteiro id excluir
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "admin", "admin");
 
 		PreparedStatement stmt = conn.prepareStatement("DELETE FROM categoria WHERE idCate = ?");
 
@@ -677,7 +668,7 @@ public class mainMenu {
 		System.out.println("");
 		int ID = Reader.readInt(); // inteiro id excluir
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "system", "system");
+		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "admin", "admin");
 
 		PreparedStatement stmt = conn.prepareStatement("DELETE FROM produto WHERE proID = ?");
 
