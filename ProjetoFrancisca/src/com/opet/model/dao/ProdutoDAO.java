@@ -7,151 +7,65 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.opet.conexao.Conexao;
+import com.opet.model.Categoria;
 import com.opet.model.Produto;
 import com.opet.util.Reader;
 
 public class ProdutoDAO {
 	
+	private static final String INSERT = "INSERT INTO produto(proID,idCate,proNome,proAltura,proLargura,"
+			+ "proCompr,proPreco,proQntd) VALUES(proSEQ.nextval,?,?,?,?,?,?,?)";
+	private static final String SELECT = "SELECT * FROM produto INNER JOIN "
+			+ "categoria ON produto.idCate = categoria.idCate";
+
 	CategoriaDAO categoria = new CategoriaDAO();
 	
 	public void cadastrar(Produto produto) throws Exception {
+		
+		Connection conn = Conexao.getConexao();
 
-		System.out.println("");
-		System.out.println("Informe a Categoria do PRODUTO: ");
-		System.out.println("");
-		System.out.println("(1) para CASAL");
-		System.out.println("(2) para SOLTEIRO");
-		System.out.println("(3) para PREMIUM-CASAL");
-		System.out.println("(4) para PREMIUM-SOLTEIRO");
-		System.out.println("(0) para SAIR");
-		int categoria = Reader.readInt();
+		PreparedStatement stmt = conn.prepareStatement(INSERT);
 
-		if (categoria != 0 && categoria < 5) {
-			System.out.println("");
-			System.out.println("OBS: A UNIDADE DE MEDIDA EM !CENTIMETRO!");
-			System.out.println("");
+		stmt.setInt(1, produto.getCategoria().getId());
+		stmt.setString(2, produto.getNome());
+		stmt.setDouble(3, produto.getAltura());
+		stmt.setDouble(4, produto.getLargura());
+		stmt.setDouble(5, produto.getComprimento());
+		stmt.setDouble(6, produto.getPreco());
+		stmt.setInt(7, produto.getQuantidade());
 
-			System.out.println("Informe o NOME do PRODUTO: ");
-			String nome = Reader.readString();
-			System.out.println("");
+		int rowAffected = stmt.executeUpdate();
 
-			System.out.println("Informe ALTURA: ");
-			double altura = Reader.readDouble();
-			System.out.println("");
-
-			System.out.println("Informe LARGURA: ");
-			double largura = Reader.readDouble();
-			System.out.println("");
-
-			System.out.println("Informe COMPRIMENTO: ");
-			double comprimento = Reader.readDouble();
-			System.out.println("");
-
-			System.out.println("Informe PRECO: ");
-			double preco = Reader.readDouble();
-			System.out.println("");
-
-			System.out.println("Informe QUANTIDADE: ");
-			int quantidade = Reader.readInt();
-			System.out.println("");
-
-			System.out.println("Confirme os Dados Cadastrados: ");
-			switch (categoria) {
-			case 1:
-				System.out.println("Categoria | " + categoria + " | [CASAL]");
-				break;
-			case 2:
-				System.out.println("Categoria | " + categoria + " | [SOLTEIRO]");
-				break;
-			case 3:
-				System.out.println("Categoria | " + categoria + " | [PREMIUM-CASAL]");
-				break;
-			case 4:
-				System.out.println("Categoria | " + categoria + " | [PREMIUM-SOLTEIRO]");
-				break;
-			default:
-				break;
-			}
-			System.out.println("NOME: | " + nome + " |");
-			System.out.println("ALTURA: | " + altura + "cm |");
-			System.out.println("LARGURA: | " + largura + "cm |");
-			System.out.println("COMPRIMENTO: | " + comprimento + "cm |");
-			System.out.println("PRECO: | R$" + preco + " |");
-			System.out.println("QUANTIDADE: | " + quantidade + " un |");
-			System.out.println("");
-
-			System.out.println("Confirma CADASTRO? (1) - SIM (2) - NAO");
-			int confirmacao = Reader.readInt();
-
-			if (confirmacao == 1) {
-				Connection conn = Conexao.getConexao();
-
-				PreparedStatement stmt = conn.prepareStatement(
-						"INSERT INTO produto(proID,idCate,proNome,proAltura,proLargura,proCompr,proPreco,proQntd) VALUES(proSEQ.nextval,?,?,?,?,?,?,?)");
-
-				stmt.setInt(1, categoria);
-				stmt.setString(2, nome);
-				stmt.setDouble(3, altura);
-				stmt.setDouble(4, largura);
-				stmt.setDouble(5, comprimento);
-				stmt.setDouble(6, preco);
-				stmt.setInt(7, quantidade);
-
-				int rowAffected = stmt.executeUpdate();
-
-				if (rowAffected == 0) {
-					conn.rollback();
-					return;
-				}
-
-				System.out.println("");
-				consultar();
-				System.out.println("");
-
-				conn.commit();
-				stmt.close();
-				conn.close();
-			} else {
-				System.out.println("");
-				System.out.println("Retorne ao Menu Principal");
-				System.out.println("");
-			}
-		} else {
-			System.out.println("");
-			System.out.println("Retorne ao Menu Principal");
-			System.out.println("");
+		if (rowAffected == 0) {
+			conn.rollback();
+			return;
 		}
+		conn.commit();
+		stmt.close();
+		conn.close();
 	}
 	
 	public Produto consultar() throws ClassNotFoundException, SQLException {
+		Produto produto = null;
+		
 		Connection conn = Conexao.getConexao();
 
-		PreparedStatement stmt = conn.prepareStatement(
-				"SELECT proID,proNome,nomeCate FROM produto INNER JOIN categoria ON produto.idCate = categoria.idCate");
+		PreparedStatement stmt = conn.prepareStatement(SELECT);
 
 		conn.setAutoCommit(false);
 
 		ResultSet rs = stmt.executeQuery();
 
-		int proID;
-		String proNome;
-		String nomeCate;
-
 		while (rs.next()) {
-			proID = rs.getInt("proID");
-			proNome = rs.getString("proNome");
-			nomeCate = rs.getString("nomeCate");
-			System.out.println("ID do Produto: |" + proID + "| Nome do Produto: |" + proNome
-					+ "| Nome da Categoria do Produto: |" + nomeCate + "|");
+			Categoria categoria = new Categoria(rs.getInt("id"), rs.getString("catNome"), rs.getString("catDescricao"));
+			produto = new Produto(categoria, rs.getString("proNome"), rs.getDouble("proAltura"), 
+					rs.getDouble("proLargura"), rs.getDouble("proComprimento"), rs.getDouble("proPreco"), 
+					rs.getInt("proQuantidade"));
 		}
-		System.out.println("");
-		System.out.println("Fim da Consulta");
-		System.out.println("");
-
 		rs.close();
 		stmt.close();
 		conn.close();
-		return null;
+		return produto;
 	}
 	
 	public void alterar(Produto produto) throws Exception {
