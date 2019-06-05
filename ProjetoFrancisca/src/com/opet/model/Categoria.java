@@ -1,6 +1,9 @@
 package com.opet.model;
 
-public class Categoria {
+import com.opet.model.dao.CategoriaDAO;
+
+public class Categoria extends CategoriaDAO{
+	
 	private int id;
 	private String nome;
 	private String descricao;
@@ -30,5 +33,17 @@ public class Categoria {
 	}
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+	
+	public void cadastrar() throws Exception {
+		super.cadastrar(this);
+	}
+	
+	public void excluir() throws Exception {
+		super.excluir(this);
+	}
+	
+	public Categoria consultar() throws Exception {
+		return super.consultar();
 	}
 }
