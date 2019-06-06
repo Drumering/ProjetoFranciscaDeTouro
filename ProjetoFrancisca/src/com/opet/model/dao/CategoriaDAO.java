@@ -3,35 +3,39 @@ package com.opet.model.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.opet.conexao.Conexao;
 import com.opet.model.Categoria;
-import com.opet.util.Reader;
 
 public class CategoriaDAO {
 	
-	
 	private static final String SELECT_ALL = "SELECT * FROM categoria";
-	private static final String INSERT = "INSERT INTO categoria (idCate,nomeCate,slugCate,pillow) "
+	private static final String SELECT_ONE = "SELECT * FROM categoria WHERE idCate = ?";
+	private static final String INSERT = "INSERT INTO categoria (idCate,nomeCate,slugCate) "
 			+ "VALUES (CateSEQ.nextval,?,?)";
 	private static final String DELETE = "DELETE FROM categoria WHERE idCate = ?";
 	
 	public void cadastrar(Categoria categoria) throws Exception {
-		
-		String nomeCategoria = Reader.readString();
-		String slugCategoria = Reader.readString();
-
-		System.out.println("Confirma cadastro da NOVA CATEGORIA: NOME: |" + nomeCategoria + "| SLUG: |" + slugCategoria + " |");
-		
+		String generatedID[] = {"idCate"};
 		Connection conn = Conexao.getConexao();
-		PreparedStatement stmtCate = conn.prepareStatement(INSERT);
+		PreparedStatement stmt = conn.prepareStatement(INSERT, generatedID);
 
-		stmtCate.setString(1, nomeCategoria);
-		stmtCate.setString(2, slugCategoria);
+		stmt.setString(1, categoria.getNome());
+		stmt.setString(2, categoria.getDescricao());
 		
 		conn.setAutoCommit(false);
 
-		int rowAffected = stmtCate.executeUpdate();
+		int rowAffected = stmt.executeUpdate();
+		ResultSet rs = stmt.getGeneratedKeys();
+		
+		while(rs.next()) {
+			int categoriaID = rs.getInt(1);
+			categoria.setId(categoriaID);
+		}
+		
+		rs.close();
 
 		if (rowAffected == 0) {
 			conn.rollback();
@@ -40,17 +44,17 @@ public class CategoriaDAO {
 
 		conn.commit();
 		conn.close();
-		stmtCate.close();
+		stmt.close();		
 	}
 
-	public Categoria consultar() throws Exception {
+	public Categoria consultar(int id) throws Exception {
 		
 		Connection conn = Conexao.getConexao();
-		Categoria categoria = null;
-		
-		PreparedStatement stmt = conn.prepareStatement(SELECT_ALL);
-
+		PreparedStatement stmt = conn.prepareStatement(SELECT_ONE);
+		stmt.setInt(1, id);
 		ResultSet rs = stmt.executeQuery();
+		
+		Categoria categoria = null;
 
 		while (rs.next()) {
 			categoria = new Categoria(rs.getInt("idCate"), rs.getString("nomeCate"), rs.getString("slugCate"));
@@ -62,10 +66,28 @@ public class CategoriaDAO {
 		return categoria;
 	}
 	
+	public ArrayList<Categoria> listar() throws SQLException {
+		
+		Connection conn = Conexao.getConexao();
+		PreparedStatement stmt = conn.prepareStatement(SELECT_ALL);
+		ResultSet rs = stmt.executeQuery();
+		
+		ArrayList<Categoria> categorias = new ArrayList<>();
+		while (rs.next()) {
+			Categoria categoria = new Categoria(rs.getInt("idCate"), 
+					rs.getString("nomeCate"), rs.getString("slugCate"));
+			categorias.add(categoria);
+		}
+
+		rs.close();
+		stmt.close();
+		conn.close();
+		return categorias;
+	}
+	
 	public void excluir(Categoria categoria) throws Exception {
 		
 		Connection conn = Conexao.getConexao();
-
 		PreparedStatement stmt = conn.prepareStatement(DELETE);
 
 		stmt.setInt(1, categoria.getId());
@@ -82,7 +104,8 @@ public class CategoriaDAO {
 		conn.close();
 	}
 
-	public void alterar() {
+	// TODO Alterar
+	public void alterar(Categoria categoria) {
 		
 	}
 }
