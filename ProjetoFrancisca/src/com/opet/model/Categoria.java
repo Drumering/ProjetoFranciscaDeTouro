@@ -1,5 +1,8 @@
 package com.opet.model;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import com.opet.model.dao.CategoriaDAO;
 
 public class Categoria extends CategoriaDAO{
@@ -10,10 +13,14 @@ public class Categoria extends CategoriaDAO{
 	
 	public Categoria() {}
 	
-	public Categoria(int id, String nome, String descricao) {
-		this.id = id;
+	public Categoria(String nome, String descricao) {
 		this.nome = nome;
 		this.descricao = descricao;
+	}
+	
+	public Categoria(int id, String nome, String descricao) {
+		this(nome, descricao);
+		this.id = id;
 	}
 	
 	public int getId() {
@@ -44,6 +51,19 @@ public class Categoria extends CategoriaDAO{
 	}
 	
 	public Categoria consultar() throws Exception {
-		return super.consultar();
+		return super.consultar(this.id);
+	}
+	
+	public ArrayList<Categoria> listar() {
+		try {
+			return super.listar();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void alterar() {
+		super.alterar(this);
 	}
 }

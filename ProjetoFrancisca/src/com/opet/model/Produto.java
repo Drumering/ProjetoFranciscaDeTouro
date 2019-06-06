@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import com.opet.model.dao.ProdutoDAO;
 
 public class Produto extends ProdutoDAO {
-	
+
 	private int id;
 	private Categoria categoria;
 	private String nome;
@@ -15,7 +15,7 @@ public class Produto extends ProdutoDAO {
 	private double comprimento;
 	private double preco;
 	private int quantidade;
-	
+
 	public Produto() {
 
 	}
@@ -31,72 +31,102 @@ public class Produto extends ProdutoDAO {
 		this.quantidade = quantidade;
 	}
 	
+	public Produto(int id, Categoria categoria, String nome, double altura, double largura, double comprimento, double preco,
+			int quantidade) {
+		this(categoria, nome, altura, largura, comprimento, preco, quantidade);
+		this.id = id;
+	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	public int getCategoriaId() {
+		return categoria.getId();
+	}
+
 	public Categoria getCategoria() {
 		return categoria;
 	}
+
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
+
 	public String getNome() {
 		return nome;
 	}
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
 	public double getAltura() {
 		return altura;
 	}
+
 	public void setAltura(double altura) {
 		this.altura = altura;
 	}
+
 	public double getLargura() {
 		return largura;
 	}
+
 	public void setLargura(double largura) {
 		this.largura = largura;
 	}
+
 	public double getComprimento() {
 		return comprimento;
 	}
+
 	public void setComprimento(double comprimento) {
 		this.comprimento = comprimento;
 	}
+
 	public double getPreco() {
 		return preco;
 	}
+
 	public void setPreco(double preco) {
 		this.preco = preco;
 	}
+
 	public int getQuantidade() {
 		return quantidade;
 	}
+
 	public void setQuantidade(int quantidade) {
 		this.quantidade = quantidade;
 	}
 
 	public void cadastrar() throws Exception {
-		super.cadastrar(this);		
+		super.cadastrar(this);
 	}
 	
+	public Produto consultar() throws Exception {
+		return super.consultar(this.id);
+	}
+
+	public ArrayList<Produto> listar() {
+		try {
+			return super.listar();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public void excluir() throws Exception {
-		super.excluir(this);
+		super.excluir(this.id);
 	}
-	
+
 	public void alterar() throws Exception {
 		super.alterar(this);
-	}
-	
-	public Produto consultar() throws ClassNotFoundException, SQLException {
-		return super.consultar();
-	}
-	
-	public ArrayList<Produto> listar() {
-		return super.listar();
 	}
 }
